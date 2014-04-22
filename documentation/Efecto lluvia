@@ -1,3 +1,6 @@
+
+Aquí solo están las funciones, setup, loop, librerias, variables y demás aún se han de poner.
+
 void effect_rain (int iterations)
 {
 	int i, ii;
@@ -34,7 +37,7 @@ void setvoxel(int x, int y, int z)
 /***********************************************************************************************************
  * Cambia el contenido del cubo a lo largo de un eje                                                       *
  * se usa para efectos donde quieres que se dibuje algo en una cara del cubo y que fluya hacia otra cara,  *
- * como lo lluvia que cae hacia la pare de abajo                                                           *
+ * como lo lluvia que cae hacia la parte de abajo                                                          *
  ***********************************************************************************************************/
 
 void shift (char axis, int direction)
@@ -111,7 +114,7 @@ void shift (char axis, int direction)
 	}
 }
 
-// Toma el estado actual del voxel (LED)
+// Devuelve el estado actual del voxel (LED)
 
 unsigned char getvoxel(int x, int y, int z)
 {
