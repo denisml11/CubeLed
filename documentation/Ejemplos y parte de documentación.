@@ -1,4 +1,3 @@
-
   Código de ejemplo del proyecto
   
 1.- www.pyroelectro.com/projects/8x8x8_led_cube/arduino_8x8x8_cube.pde
@@ -46,5 +45,8 @@ http://arduino.cc/es/Reference/HomePage#.U1Yv0Pl_tUU
 - void loop(): Se usa una vez se ha inicializado y preparado los valores iniciales (void setup()). Es un bucle 
                en el que se ejecutan las funciones que tenga dentro infinitamente. Igual que un while(1).
                
-- 
+- Vóxel: Es una unidad cúbica que compone un bojeto tridimensional. Constituye la unidad mínima procesable de una 
+         matriz tridimensional, y es, por tanto, el equivalente del píxel en un objeto 3D.
+         
+- ¿Falta algo más?
 
