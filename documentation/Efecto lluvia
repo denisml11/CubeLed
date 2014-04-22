@@ -1,5 +1,4 @@
-
-Aquí solo están las funciones, setup, loop, librerias, variables y demás aún se han de poner.
+Aquí solo están las funciones. Setup, loop, librerias, variables y demás aún se han de poner.
 
 void effect_rain (int iterations)
 {
