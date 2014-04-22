@@ -1,0 +1,50 @@
+
+  Código de ejemplo del proyecto
+  
+1.- www.pyroelectro.com/projects/8x8x8_led_cube/arduino_8x8x8_cube.pde
+2.- www.pyroelectro.com/projects/8x8x8_led_cube/pyroelectro_8x8x8.pde 
+
+  Librerias  que se pueden utilizar:
+
+  Estándar:
+
+Los siguientes librerías son compatibles y tienen una exelente documentación de Wiring
+
+Matrix - Librería para manipular displays de matrices de LED básicas.
+Sprite - Librería básica para manipulacion de sprites para usar en animaciones con matrices de LEDs.
+
+  Externas:
+
+LedControl - Para controlar matrices de LEDs o displays de siete segmentos con MAX7221 ó MAX7219.
+LedControl - Alternativa a la librería Matrix para controlar múltiples LEDs con chips Maxim.
+LedDisplay - Control para marquesina de LED HCMS-29xx.
+
+  Referencia del lenguaje de Arduino:
+  
+http://arduino.cc/es/Reference/HomePage#.U1Yv0Pl_tUU
+
+  Documentación del programa de Arduino
+  
+  Detro del código hay palabras clavesuq supongo que son específicas de las librerías, de todas formas,
+  se debería comprobar que es, por ejemplo TIMER2_COMPA_vect, CS22, ... parecen variabes pero no están definidas
+  en ningún sitio.
+
+- volatile: Palabra clave para el comportamiento del compilador o del programa sobre la variable. 
+            (Se usa para que el valor de lavariable no se modifique en el "interrupt service routine")
+            
+- void setup(): Se utiliza para inicializar variables, establecer estados de pins, inicializar librerias, etc..
+                Se ejecutará solo una vez después de que se conecte la placa Arduino a la fuente de alimentación,
+                o cuando se pulse el botón de reinicion de la placa.
+                
+- 0xff, 0x01, 0x... son números en hexadecimal que toman ciertas variables.
+
+- pinMode(i,INPUT/OUTPUT): Configura el pin especificado como debe comportarse, si es de entrada (INPUT)
+                           o de salida (OUTPUT).
+                           
+- PORTB &= 0b00110111; (Se habilita la salida).
+
+- void loop(): Se usa una vez se ha inicializado y preparado los valores iniciales (void setup()). Es un bucle 
+               en el que se ejecutan las funciones que tenga dentro infinitamente. Igual que un while(1).
+               
+- 
+
