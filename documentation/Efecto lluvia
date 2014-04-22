@@ -1,0 +1,153 @@
+void effect_rain (int iterations)
+{
+	int i, ii;
+	int rnd_x;
+	int rnd_y;
+	int rnd_num;
+	
+	for (ii=0;ii<iterations;ii++)
+	{
+		rnd_num = rand()%4;
+		
+		for (i=0; i < rnd_num;i++)
+		{
+			rnd_x = rand()%8;
+			rnd_y = rand()%8;
+			setvoxel(rnd_x,rnd_y,7);
+		}
+		
+		delay_ms(1000);
+		shift(AXIS_Z,-1);
+	}
+}
+
+Este efecto utiliza estas funciones:
+
+// Enciende un solo voxel (LED)
+
+void setvoxel(int x, int y, int z)
+{
+	if (inrange(x,y,z))
+		cube[z][y] |= (1 << x);
+}
+
+/***********************************************************************************************************
+ * Cambia el contenido del cubo a lo largo de un eje                                                       *
+ * se usa para efectos donde quieres que se dibuje algo en una cara del cubo y que fluya hacia otra cara,  *
+ * como lo lluvia que cae hacia la pare de abajo                                                           *
+ ***********************************************************************************************************/
+
+void shift (char axis, int direction)
+{
+	int i, x ,y;
+	int ii, iii;
+	int state;
+
+	for (i = 0; i < 8; i++)
+	{
+		if (direction == -1)
+		{
+			ii = i;
+		} else
+		{
+			ii = (7-i);
+		}	
+	
+	
+		for (x = 0; x < 8; x++)
+		{
+			for (y = 0; y < 8; y++)
+			{
+				if (direction == -1)
+				{
+					iii = ii+1;
+				} else
+				{
+					iii = ii-1;
+				}
+				
+				if (axis == AXIS_Z)
+				{
+					state = getvoxel(x,y,iii);
+					altervoxel(x,y,ii,state);
+				}
+				
+				if (axis == AXIS_Y)
+				{
+					state = getvoxel(x,iii,y);
+					altervoxel(x,ii,y,state);
+				}
+				
+				if (axis == AXIS_X)
+				{
+					state = getvoxel(iii,y,x);
+					altervoxel(ii,y,x,state);
+				}
+			}
+		}
+	}
+	
+	if (direction == -1)
+	{
+		i = 7;
+	} else
+	{
+		i = 0;
+	}	
+	
+	for (x = 0; x < 8; x++)
+	{
+		for (y = 0; y < 8; y++)
+		{
+			if (axis == AXIS_Z)
+				clrvoxel(x,y,i);
+				
+			if (axis == AXIS_Y)
+				clrvoxel(x,i,y);
+			
+			if (axis == AXIS_X)
+				clrvoxel(i,y,x);
+		}
+	}
+}
+
+// Toma el estado actual del voxel (LED)
+
+unsigned char getvoxel(int x, int y, int z)
+{
+	if (inrange(x,y,z))
+	{
+		if (cube[z][y] & (1 << x))
+		{
+			return 0x01;
+		} else
+		{
+			return 0x00;
+		}
+	} else
+	{
+		return 0x00;
+	}
+}
+
+//Establece un voxel (LED) a ON
+
+void clrvoxel(int x, int y, int z)
+{
+	if (inrange(x,y,z))
+		cube[z][y] &= ~(1 << x);
+}
+
+//En algún efecto solo queremos cojer un solo bool y guardalo en un voxel (LED)
+//Esta función llama a la manipulación del voxel (LED) apropiada
+
+void altervoxel(int x, int y, int z, int state)
+{
+	if (state == 1)
+	{
+		setvoxel(x,y,z);
+	} else
+	{
+		clrvoxel(x,y,z);
+	}
+}
