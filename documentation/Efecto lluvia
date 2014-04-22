@@ -34,9 +34,9 @@ void setvoxel(int x, int y, int z)
 }
 
 /***********************************************************************************************************
- * Cambia el contenido del cubo a lo largo de un eje                                                       *
- * se usa para efectos donde quieres que se dibuje algo en una cara del cubo y que fluya hacia otra cara,  *
- * como lo lluvia que cae hacia la parte de abajo                                                          *
+ * Cambia el contenido del cubo a lo largo de un eje.                                                      *
+ * Se usa para efectos donde quieres que se dibuje algo en una cara del cubo y que fluya hacia otra cara,  *
+ * como lo lluvia que cae hacia la parte de abajo.                                                         *
  ***********************************************************************************************************/
 
 void shift (char axis, int direction)
@@ -113,7 +113,7 @@ void shift (char axis, int direction)
 	}
 }
 
-// Devuelve el estado actual del voxel (LED)
+// Devuelve el estado actual del voxel (LED).
 
 unsigned char getvoxel(int x, int y, int z)
 {
@@ -132,7 +132,7 @@ unsigned char getvoxel(int x, int y, int z)
 	}
 }
 
-//Establece un voxel (LED) a ON
+//Establece un voxel (LED) a ON.
 
 void clrvoxel(int x, int y, int z)
 {
@@ -140,8 +140,8 @@ void clrvoxel(int x, int y, int z)
 		cube[z][y] &= ~(1 << x);
 }
 
-//En algún efecto solo queremos cojer un solo bool y guardalo en un voxel (LED)
-//Esta función llama a la manipulación del voxel (LED) apropiada
+//En algún efecto solo queremos cojer un solo bool y guardalo en un voxel (LED).
+//Esta función llama a la manipulación del voxel (LED) apropiada.
 
 void altervoxel(int x, int y, int z, int state)
 {
