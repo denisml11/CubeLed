@@ -3,14 +3,14 @@
 1.- www.pyroelectro.com/projects/8x8x8_led_cube/arduino_8x8x8_cube.pde
 2.- www.pyroelectro.com/projects/8x8x8_led_cube/pyroelectro_8x8x8.pde 
 
-  Librerias  que se pueden utilizar:
+  Librerías  que se pueden utilizar:
 
   Estándar:
 
-Los siguientes librerías son compatibles y tienen una exelente documentación de Wiring
+Los siguientes librerías son compatibles y tienen una excelente documentación de Wiring
 
-Matrix - Librería para manipular displays de matrices de LED básicas.
-Sprite - Librería básica para manipulacion de sprites para usar en animaciones con matrices de LEDs.
+Matrix - Librería para manipular displays de matriz de LED básicas.
+Sprite - Librería básica para manipulación de sprites para usar en animaciones con matrices de LEDs.
 
   Externas:
 
@@ -24,14 +24,14 @@ http://arduino.cc/es/Reference/HomePage#.U1Yv0Pl_tUU
 
   Documentación del programa de Arduino
   
-  Detro del código hay palabras clavesuq supongo que son específicas de las librerías, de todas formas,
-  se debería comprobar que es, por ejemplo TIMER2_COMPA_vect, CS22, ... parecen variabes pero no están definidas
+  Dentro del código hay palabras claves que supongo que son específicas de las librerías, de todas formas,
+  se debería comprobar que es, por ejemplo TIMER2_COMPA_vect, CS22, ... parecen variables pero no están definidas
   en ningún sitio.
 
-- volatile: Palabra clave para el comportamiento del compilador o del programa sobre la variable. 
-            (Se usa para que el valor de lavariable no se modifique en el "interrupt service routine")
+- volatile: Palabra clave para el comportamiento del compilador o del programa sobre la variable.
+            (Se usa para que el valor de la variable no se modifique en el "interrupt service routine")
             
-- void setup(): Se utiliza para inicializar variables, establecer estados de pins, inicializar librerias, etc..
+- void setup(): Se utiliza para inicializar variables, establecer estados de pins, inicializar librerías, etc..
                 Se ejecutará solo una vez después de que se conecte la placa Arduino a la fuente de alimentación,
                 o cuando se pulse el botón de reinicion de la placa.
                 
@@ -42,11 +42,10 @@ http://arduino.cc/es/Reference/HomePage#.U1Yv0Pl_tUU
                            
 - PORTB &= 0b00110111; (Se habilita la salida).
 
-- void loop(): Se usa una vez se ha inicializado y preparado los valores iniciales (void setup()). Es un bucle 
+- void loop(): Se usa una vez se ha inicializado y preparado los valores iniciales (void setup()). Es un bucle
                en el que se ejecutan las funciones que tenga dentro infinitamente. Igual que un while(1).
                
-- Vóxel: Es una unidad cúbica que compone un bojeto tridimensional. Constituye la unidad mínima procesable de una 
+- Vóxel: Es una unidad cúbica que compone un objeto tridimensional. Constituye la unidad mínima procesable de una
          matriz tridimensional, y es, por tanto, el equivalente del píxel en un objeto 3D.
          
 - ¿Falta algo más?
-
