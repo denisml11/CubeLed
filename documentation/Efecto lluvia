@@ -1,4 +1,102 @@
-Aquí solo están las funciones. Setup, loop, librerias, variables y demás aún se han de poner.
+/*Inicio del código*/
+
+#include <avr/interrupt.h>
+#include <string.h>
+#define eje_X 1
+#define eje_Y 2
+#define eje_Z 3
+
+volatile unsigned char cubo[8][8];
+volatile int current_layer = 0;
+
+
+/*********************************************** INICIO SETUP ***************************************************/
+
+void setup()
+{
+  int i;
+  
+  for(i=0; i<14; i++)
+    pinMode(i, OUTPUT);
+  
+  // pinMode(A0, OUTPUT) as specified in the arduino reference didn't work. So I accessed the registers directly.
+  DDRC = 0xff;
+  PORTC = 0x00;
+  
+  // Reset any PWM configuration that the arduino may have set up automagically!
+  TCCR2A = 0x00;
+  TCCR2B = 0x00;
+
+  TCCR2A |= (0x01 << WGM21); // CTC mode. clear counter on TCNT2 == OCR2A
+  OCR2A = 10; // Interrupt every 25600th cpu cycle (256*100)
+  TCNT2 = 0x00; // start counting at 0
+  TCCR2B |= (0x01 << CS22) | (0x01 << CS21); // Start the clock with a 256 prescaler
+  
+  TIMSK2 |= (0x01 << OCIE2A);
+}
+
+/*********************************************** FIN SETUP ****************************************************/
+
+/*********************************************** INICIO ISR ***************************************************/
+/* Esto es algo que no se lo que es, parece que es como el setup, como para preparar los pines y todo */
+
+ISR (TIMER2_COMPA_vect)
+{
+  int i;
+  
+  // todas las capas seleccinadas apagadas
+  PORTC = 0x00;
+  PORTB &= 0x0f;
+  
+  PORTB |= 0x08; // salida habilitada off.
+  
+  for (i=0; i<8; i++)
+  {
+    PORTD = cubo[current_layer][i];
+    PORTB = (PORTB & 0xF8) | (0x07 & (i+1));
+  }
+  
+  PORTB &= 0b00110111; // Salida habilitada on.
+  
+  if (current_layer < 6)
+  {
+    PORTC = (0x01 << current_layer);
+  } else if (current_layer == 6)
+  {
+    digitalWrite(12, HIGH);
+  } else
+  {
+    digitalWrite(13, HIGH);
+  }
+  
+  current_layer++;
+  
+  if (current_layer == 8)
+    current_layer = 0;
+}
+
+/*********************************************** FIN ISR ****************************************************/
+
+/********************************************** INICIO LOOP *************************************************/
+
+void loop()
+{
+  int i,x,y,z;
+  
+  while (true)
+  {
+
+    
+    effect_rain(100);
+   
+    
+  }
+}
+
+/*********************************************** FIN LOOP ***************************************************/
+
+
+/*********************************************** INICIO LLUVIA **********************************************/
 
 void effect_rain (int iterations)
 {
@@ -19,18 +117,20 @@ void effect_rain (int iterations)
 		}
 		
 		delay_ms(1000);
-		shift(AXIS_Z,-1);
+		shift(eje_Z,-1);
 	}
 }
 
-Este efecto utiliza estas funciones:
+/*********************************************** FIN LLUVIA ***************************************************/
+
+//Este efecto utiliza estas funciones:
 
 // Enciende un solo voxel (LED)
 
 void setvoxel(int x, int y, int z)
 {
 	if (inrange(x,y,z))
-		cube[z][y] |= (1 << x);
+		cubo[z][y] |= (1 << x);
 }
 
 /***********************************************************************************************************
@@ -39,15 +139,15 @@ void setvoxel(int x, int y, int z)
  * como lo lluvia que cae hacia la parte de abajo.                                                         *
  ***********************************************************************************************************/
 
-void shift (char axis, int direction)
+void shift (char eje, int direccion)
 {
 	int i, x ,y;
 	int ii, iii;
-	int state;
+	int estado;
 
 	for (i = 0; i < 8; i++)
 	{
-		if (direction == -1)
+		if (direccion == -1)
 		{
 			ii = i;
 		} else
@@ -60,7 +160,7 @@ void shift (char axis, int direction)
 		{
 			for (y = 0; y < 8; y++)
 			{
-				if (direction == -1)
+				if (direccion == -1)
 				{
 					iii = ii+1;
 				} else
@@ -68,28 +168,28 @@ void shift (char axis, int direction)
 					iii = ii-1;
 				}
 				
-				if (axis == AXIS_Z)
+				if (eje == eje_Z)
 				{
-					state = getvoxel(x,y,iii);
-					altervoxel(x,y,ii,state);
+					estado = getvoxel(x,y,iii);
+					altervoxel(x,y,ii,estado);
 				}
 				
-				if (axis == AXIS_Y)
+				if (eje == eje_Y)
 				{
-					state = getvoxel(x,iii,y);
-					altervoxel(x,ii,y,state);
+					estado = getvoxel(x,iii,y);
+					altervoxel(x,ii,y,estado);
 				}
 				
-				if (axis == AXIS_X)
+				if (eje == eje_X)
 				{
-					state = getvoxel(iii,y,x);
-					altervoxel(ii,y,x,state);
+					estado = getvoxel(iii,y,x);
+					altervoxel(ii,y,x,estado);
 				}
 			}
 		}
 	}
 	
-	if (direction == -1)
+	if (direccion == -1)
 	{
 		i = 7;
 	} else
@@ -101,13 +201,13 @@ void shift (char axis, int direction)
 	{
 		for (y = 0; y < 8; y++)
 		{
-			if (axis == AXIS_Z)
+			if (eje == eje_Z)
 				clrvoxel(x,y,i);
 				
-			if (axis == AXIS_Y)
+			if (eje == eje_Y)
 				clrvoxel(x,i,y);
 			
-			if (axis == AXIS_X)
+			if (eje == eje_X)
 				clrvoxel(i,y,x);
 		}
 	}
@@ -119,7 +219,7 @@ unsigned char getvoxel(int x, int y, int z)
 {
 	if (inrange(x,y,z))
 	{
-		if (cube[z][y] & (1 << x))
+		if (cubo[z][y] & (1 << x))
 		{
 			return 0x01;
 		} else
@@ -137,19 +237,45 @@ unsigned char getvoxel(int x, int y, int z)
 void clrvoxel(int x, int y, int z)
 {
 	if (inrange(x,y,z))
-		cube[z][y] &= ~(1 << x);
+		cubo[z][y] &= ~(1 << x);
 }
 
 //En algún efecto solo queremos coger un solo bool y guardalo en un voxel (LED).
 //Esta función llama a la manipulación del voxel (LED) apropiada.
 
-void altervoxel(int x, int y, int z, int state)
+void altervoxel(int x, int y, int z, int estado)
 {
-	if (state == 1)
+	if (estado == 1)
 	{
 		setvoxel(x,y,z);
 	} else
 	{
 		clrvoxel(x,y,z);
+	}
+}
+
+void delay_ms(uint16_t x)
+{
+  uint8_t y, z;
+  for ( ; x > 0 ; x--){
+    for ( y = 0 ; y < 90 ; y++){
+      for ( z = 0 ; z < 6 ; z++){
+        asm volatile ("nop");
+      }
+    }
+  }
+}
+
+//Comprueba que se está dibujando dentro del cubo
+
+unsigned char inrange(int x, int y, int z)
+{
+	if (x >= 0 && x < 8 && y >= 0 && y < 8 && z >= 0 && z < 8)
+	{
+		return 0x01;
+	} else
+	{
+		// una de las coordenadas estaba fuera del cubo
+		return 0x00;
 	}
 }
