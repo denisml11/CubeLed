@@ -140,7 +140,7 @@ void clrvoxel(int x, int y, int z)
 		cube[z][y] &= ~(1 << x);
 }
 
-//En algún efecto solo queremos cojer un solo bool y guardalo en un voxel (LED).
+//En algún efecto solo queremos coger un solo bool y guardalo en un voxel (LED).
 //Esta función llama a la manipulación del voxel (LED) apropiada.
 
 void altervoxel(int x, int y, int z, int state)
