@@ -33,7 +33,7 @@ http://arduino.cc/es/Reference/HomePage#.U1Yv0Pl_tUU
             
 - void setup(): Se utiliza para inicializar variables, establecer estados de pins, inicializar librerías, etc..
                 Se ejecutará solo una vez después de que se conecte la placa Arduino a la fuente de alimentación,
-                o cuando se pulse el botón de reinicion de la placa.
+                o cuando se pulse el botón de reinicio de la placa.
                 
 - 0xff, 0x01, 0x... son números en hexadecimal que toman ciertas variables.
 
