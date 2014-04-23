@@ -7,7 +7,7 @@
 #define eje_Z 3
 
 volatile unsigned char cubo[8][8];
-volatile int current_layer = 0;
+volatile int capaActual = 0;
 
 
 /*********************************************** INICIO SETUP ***************************************************/
@@ -52,16 +52,16 @@ ISR (TIMER2_COMPA_vect)
   
   for (i=0; i<8; i++)
   {
-    PORTD = cubo[current_layer][i];
+    PORTD = cubo[capaActual][i];
     PORTB = (PORTB & 0xF8) | (0x07 & (i+1));
   }
   
   PORTB &= 0b00110111; // Salida habilitada on.
   
-  if (current_layer < 6)
+  if (capaActual < 6)
   {
-    PORTC = (0x01 << current_layer);
-  } else if (current_layer == 6)
+    PORTC = (0x01 << capaActual);
+  } else if (capaActual == 6)
   {
     digitalWrite(12, HIGH);
   } else
@@ -69,10 +69,10 @@ ISR (TIMER2_COMPA_vect)
     digitalWrite(13, HIGH);
   }
   
-  current_layer++;
+  capaActual++;
   
-  if (current_layer == 8)
-    current_layer = 0;
+  if (capaActual == 8)
+    capaActual = 0;
 }
 
 /*********************************************** FIN ISR ****************************************************/
@@ -85,11 +85,7 @@ void loop()
   
   while (true)
   {
-
-    
-    effect_rain(100);
-   
-    
+    lluvia(100);
   }
 }
 
@@ -98,7 +94,7 @@ void loop()
 
 /*********************************************** INICIO LLUVIA **********************************************/
 
-void effect_rain (int iterations)
+void lluvia (int iterations)
 {
 	int i, ii;
 	int rnd_x;
@@ -117,7 +113,7 @@ void effect_rain (int iterations)
 		}
 		
 		delay_ms(1000);
-		shift(eje_Z,-1);
+		mueve(eje_Z,-1);
 	}
 }
 
@@ -129,7 +125,7 @@ void effect_rain (int iterations)
 
 void setvoxel(int x, int y, int z)
 {
-	if (inrange(x,y,z))
+	if (dentro(x,y,z))
 		cubo[z][y] |= (1 << x);
 }
 
@@ -139,10 +135,10 @@ void setvoxel(int x, int y, int z)
  * como lo lluvia que cae hacia la parte de abajo.                                                         *
  ***********************************************************************************************************/
 
-void shift (char eje, int direccion)
+void mueve (char eje, int direccion)
 {
 	int i, x ,y;
-	int ii, iii;
+	int ii, j;
 	int estado;
 
 	for (i = 0; i < 8; i++)
@@ -162,27 +158,27 @@ void shift (char eje, int direccion)
 			{
 				if (direccion == -1)
 				{
-					iii = ii+1;
+					j = ii+1;
 				} else
 				{
-					iii = ii-1;
+					j = ii-1;
 				}
 				
 				if (eje == eje_Z)
 				{
-					estado = getvoxel(x,y,iii);
+					estado = getvoxel(x,y,j);
 					altervoxel(x,y,ii,estado);
 				}
 				
 				if (eje == eje_Y)
 				{
-					estado = getvoxel(x,iii,y);
+					estado = getvoxel(x,j,y);
 					altervoxel(x,ii,y,estado);
 				}
 				
 				if (eje == eje_X)
 				{
-					estado = getvoxel(iii,y,x);
+					estado = getvoxel(j,y,x);
 					altervoxel(ii,y,x,estado);
 				}
 			}
@@ -217,7 +213,7 @@ void shift (char eje, int direccion)
 
 unsigned char getvoxel(int x, int y, int z)
 {
-	if (inrange(x,y,z))
+	if (dentro(x,y,z))
 	{
 		if (cubo[z][y] & (1 << x))
 		{
@@ -236,7 +232,7 @@ unsigned char getvoxel(int x, int y, int z)
 
 void clrvoxel(int x, int y, int z)
 {
-	if (inrange(x,y,z))
+	if (dentro(x,y,z))
 		cubo[z][y] &= ~(1 << x);
 }
 
@@ -271,7 +267,7 @@ void delay_ms(uint16_t x)
 
 //Comprueba que se está dibujando dentro del cubo
 
-unsigned char inrange(int x, int y, int z)
+unsigned char dentro(int x, int y, int z)
 {
 	if (x >= 0 && x < 8 && y >= 0 && y < 8 && z >= 0 && z < 8)
 	{
