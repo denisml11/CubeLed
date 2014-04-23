@@ -254,6 +254,9 @@ void altervoxel(int x, int y, int z, int estado)
 	}
 }
 
+//Habría que mirar como hacer un delay diferente, que este no se si funciona correctamente, 
+//aparte, es muy lioso y no esntiendo exactamente lo que hace
+
 void delay_ms(uint16_t x)
 {
   uint8_t y, z;
