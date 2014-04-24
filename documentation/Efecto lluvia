@@ -14,9 +14,8 @@ volatile int capaActual = 0;
 
 void setup()
 {
-  int i;
   
-  for(i=0; i<14; i++)
+  for(int i=0; i<14; i++)
     pinMode(i, OUTPUT);
   
   DDRC = 0xff;
@@ -42,7 +41,6 @@ void setup()
 
 ISR (TIMER2_COMPA_vect) 
 {
-  int i;
   
   // todas las capas seleccinadas apagadas
   PORTC = 0x00;
@@ -50,7 +48,7 @@ ISR (TIMER2_COMPA_vect)
   
   PORTB |= 0x08; // salida habilitada off.
   
-  for (i=0; i<8; i++)
+  for (int i=0; i<8; i++)
   {
     PORTD = cubo[capaActual][i];
     PORTB = (PORTB & 0xF8) | (0x07 & (i+1));
@@ -94,18 +92,17 @@ void loop()
 
 /*********************************************** INICIO LLUVIA **********************************************/
 
-void lluvia (int iterations)
+void lluvia (int veces)
 {
-	int i, ii;
 	int rnd_x;
 	int rnd_y;
 	int rnd_num;
 	
-	for (ii=0;ii<iterations;ii++)
+	for (int e=0; e<veces; e++)
 	{
 		rnd_num = rand()%4;
 		
-		for (i=0; i < rnd_num;i++)
+		for (int i=0; i < rnd_num;i++)
 		{
 			rnd_x = rand()%8;
 			rnd_y = rand()%8;
