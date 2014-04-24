@@ -248,7 +248,7 @@ void altervoxel(int x, int y, int z, int estado)
 }
 
 //Habría que mirar como hacer un delay diferente, que este no se si funciona correctamente, 
-//aparte, es muy lioso y no esntiendo exactamente lo que hace
+//a parte, es muy lioso y no esntiendo exactamente lo que hace
 
 void delay_ms(uint16_t x)
 {
@@ -266,12 +266,12 @@ void delay_ms(uint16_t x)
 
 unsigned char dentro(int x, int y, int z)
 {
-	if (x >= 0 && x < 8 && y >= 0 && y < 8 && z >= 0 && z < 8)
+	if ((x >= 0 && x < 8) && (y >= 0 && y < 8) && (z >= 0 && z < 8))
 	{
-		return 0x01;
+		return 0x01; //binario -> 00000001
 	} else
 	{
-		// una de las coordenadas estaba fuera del cubo
-		return 0x00;
+		// cuando una de las coordenadas no está dentro del rango del cubo de 8x8x8
+		return 0x00; //binario -> 00000000
 	}
 }
