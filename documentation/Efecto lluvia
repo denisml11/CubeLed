@@ -39,6 +39,8 @@ void setup()
 // Se puede usar en cualquier origen de errores/interrupción.
 // Solo se puede asociar una función con cada origen de error/interrupción
 
+				/*Esto creo que es así pero no stoy seguro*/
+
 ISR (TIMER2_COMPA_vect) 
 {
   
