@@ -23,7 +23,19 @@ void setup()
   
   TCCR2A = 0x00;
   TCCR2B = 0x00;
-
+		
+  /* |= operador binario or logico 
+  	0 + 1 = 1
+  	1 + 0 = 1
+  	1 + 1 = 1
+  	0 + 0 = 0
+  	
+  	<< deplazamiento a la izquierda, se le añade un cero al final de la cadena, desplazando el 
+  	     bit que está a la izquierda.
+  	     
+  	     
+  */
+		
   TCCR2A |= (0x01 << WGM21);
   OCR2A = 10;
   TCNT2 = 0x00;
