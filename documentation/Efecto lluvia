@@ -57,6 +57,14 @@ void setup()
 
 ISR (TIMER2_COMPA_vect) 
 {
+  // http://arduino.cc/es/Reference/Board   --> Esquema de Arduino uno
+  
+  //PORTB --> pines digitales del 8 al 13    |     Creo que es así pero no estoy seguro
+  //PORTC --> entradas analógicas            |-->  son de los chips udsados en las placas de arduino
+  //PORTD --> pines digitales del 0 al 7     |      ATmega8 y el ATmega168 (creo que son los chips y no placas)
+  
+  //  Los registros de PORT permiten manipular los pines del microcontrolador de la placa Arduino em bajo nivel 
+  //  y demanera más rapida
   
   // todas las capas seleccinadas apagadas
   PORTC = 0x00;
