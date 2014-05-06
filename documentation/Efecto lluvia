@@ -1,4 +1,4 @@
-/*Inicio del código*/
+/*Inicio del código*/    /*Mirar esta página sin falta http://playground.arduino.cc/Main/LedControl */
 
 #include <avr/interrupt.h>
 #include <string.h>
