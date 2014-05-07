@@ -103,7 +103,6 @@ ISR (TIMER2_COMPA_vect)
 
 void loop()
 {
-  int i,x,y,z;//sobraría, pero comprobar
   
   while (true)//también sobraría, creo, pero comprobar con el cubo
   {
