@@ -133,7 +133,7 @@ void lluvia (int veces)
 			setvoxel(rnd_x,rnd_y,7);
 		}
 		
-		delay_ms(1000);/en vez de usar su función de delay_ms, se puede usar la predeterminada de delay();
+		delay_ms(1000); //en vez de usar su función de delay_ms, se puede usar la predeterminada de delay();
 		mueve(eje_Z,-1);
 	}
 }
