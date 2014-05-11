@@ -1,0 +1,528 @@
+      /*Inicio del código*/ /*Mirar esta página sin falta http://playground.arduino.cc/Main/LedControl */
+      
+      #include <avr/interrupt.h>
+      #include <string.h>
+      #define eje_X 1
+      #define eje_Y 2
+      #define eje_Z 3
+      
+      volatile unsigned char cubo[8][8];
+      volatile int capaActual = 0;
+      
+      
+      /*********************************************** INICIO SETUP ***************************************************/
+      
+      void setup()
+      {
+        
+        for(int i=0; i<14; i++)
+          pinMode(i, OUTPUT);
+        
+        DDRC = 0xff;
+        PORTC = 0x00; // 0x00 --> 00000000
+         // 0xff --> 11111111
+        
+        TCCR2A = 0x00;
+        TCCR2B = 0x00;
+      
+        /* |= operador binario or logico
+         0 + 1 = 1
+         1 + 0 = 1
+         1 + 1 = 1
+         0 + 0 = 0
+        
+         << deplazamiento a la izquierda, se le añade un cero al final de la cadena, desplazando el
+         bit que está a la izquierda.
+        
+         ~ complemento a 1, buscar que es.
+        
+        
+        */
+      
+        TCCR2A |= (0x01 << WGM21); // 0x01 --> 00000001
+        OCR2A = 10;
+        TCNT2 = 0x00;
+        TCCR2B |= (0x01 << CS22) | (0x01 << CS21);
+        
+        TIMSK2 |= (0x01 << OCIE2A);
+      }
+      
+      /*********************************************** FIN SETUP ****************************************************/
+      
+      /*********************************************** INICIO ISR ***************************************************/
+      // ISR es como se llama al compilador para asociar una función con un error/interrupción especifico.
+      // Se puede usar en cualquier origen de errores/interrupción.
+      // Solo se puede asociar una función con cada origen de error/interrupción
+      
+      /*Esto creo que es así pero no stoy seguro*/
+      
+      ISR (TIMER2_COMPA_vect)
+      {
+        // http://arduino.cc/es/Reference/Board --> Esquema de Arduino uno
+        
+        //PORTB --> pines digitales del 8 al 13 | Creo que es así pero no estoy seguro
+        //PORTC --> entradas analógicas |--> son de los chips udsados en las placas de arduino
+        //PORTD --> pines digitales del 0 al 7 | ATmega8 y el ATmega168 (creo que son los chips y no placas)
+        
+        // Los registros de PORT permiten manipular los pines del microcontrolador de la placa Arduino em bajo nivel
+        // y demanera más rapida
+        
+        // todas las capas seleccinadas apagadas
+        PORTC = 0x00;
+        PORTB &= 0x0f; // 0x0f --> 00001111
+        
+        PORTB |= 0x08; // salida habilitada off. // 0x08 --> 0000100
+        
+        for (int i=0; i<8; i++)
+        {
+          PORTD = cubo[capaActual][i];
+          PORTB = (PORTB & 0xF8) | (0x07 & (i+1)); // 0xF8 --> 11111000
+        } // 0x07 --> 00000111
+        
+        PORTB &= 0b00110111; // Salida habilitada on.
+        
+        if (capaActual < 6)
+        {
+          PORTC = (0x01 << capaActual);
+        } else if (capaActual == 6)
+        {
+          digitalWrite(12, HIGH);
+        } else
+        {
+          digitalWrite(13, HIGH);
+        }
+        
+        capaActual++;
+        
+        if (capaActual == 8)
+          capaActual = 0;
+      }
+      
+      /*********************************************** FIN ISR ****************************************************/
+      
+      /********************************************** INICIO LOOP *************************************************/
+      
+      void loop()
+      {
+        
+
+          
+         // cohetes();
+          //limpiar3(); //Mirar la funcion de limpiar porqure limpia toooooooda la planta, no hay que indicarle que etela ha de limpiar, el movimineto " void mover(), limpia las plantas"
+          //explosiones();
+          //limpiar3();
+          
+          cohete();
+          limpiar();
+          explosion();
+          limpiar3();
+          limpiarRestos();
+         
+
+          
+        
+      }
+      
+      /*********************************************** FIN LOOP ***************************************************/
+      
+      
+      /*********************************************** INICIO LLUVIA **********************************************/
+      
+      
+      void lluvia (int veces)
+      {
+          int rnd_x;
+          int rnd_y;
+          int rnd_num;
+
+
+              rnd_num = rand()%2; // número de gotas de lluvia que sale por vez creo, con 3 es o una gota o dos.
+
+              for (int i=0; i < rnd_num;i++)
+              {
+                rnd_x = rand()%8; // la posicion de donde sale la gota de agua
+                rnd_y = rand()%8;
+                setvoxel(rnd_x,rnd_y,0); //sale de la planta de abajo
+              }
+
+                delay_ms(10000); //en vez de usar su función de delay_ms, se puede usar la predeterminada de delay();
+                mueve(eje_Z,1);// que sea ascendente el movimiento, se ha de poner que la funcion muev mantegan los leds de trayectoria, y cuando llegue arriba vaya desaparecianedo desde abajo
+           
+    }
+     void cohete()
+     {
+       for(int i = 0; i < 6; i++)
+       {
+           //primero se ha de encender un led de la capa de abajo
+           setvoxel(3,3,0);
+           //Hemos de hacer el efecto ascendente
+           delay(100);
+           mueve2(eje_Z,1);
+       }
+       
+       //La cosa es que lo hace hasta el ultimo piso, como si el efecto ascendete no parase
+     
+     }
+     
+     void cohetes()
+     {
+       for(int i = 0; i < 6; i++)
+       {
+           //primero se ha de encender un led de la capa de abajo
+           setvoxel(3,3,0);
+           setvoxel(1,1,0);
+           setvoxel(4,4,0);
+           //Hemos de hacer el efecto ascendente
+           delay(100);
+           mueve2(eje_Z,1);
+       }
+       
+       //La cosa es que lo hace hasta el ultimo piso, como si el efecto ascendete no parase
+     
+     }
+     
+     void limpiar()
+     {
+       for(int i = 0; i < 6; i++)
+       {
+           clrvoxel(3,3,0);
+           delay(100); 
+           mueve2(eje_Z,1);
+       }
+       
+     }
+     
+      void limpiar2()
+     {
+       for(int i = 0; i < 8; i++)
+       {
+       clrvoxel(2,3,5);
+       delay(1000);
+       clrvoxel(1,3,4);
+       delay(1000);
+       clrvoxel(0,3,3);
+
+
+       }
+       
+     }
+     
+     
+        void limpiar3()
+     {
+   
+           
+           for(int i = 0; i < 7; i++)
+           {
+           clrvoxel(3,3,i);
+           delay(70);
+           clrvoxel(1,1,i);
+           delay(120);
+           clrvoxel(4,4,i);
+           delay(180);
+           }
+       
+     }
+     
+     void limpiarRestos()
+     {
+       clrvoxel(2,3,5); //lados (cruz)
+       clrvoxel(4,3,5);
+       clrvoxel(3,2,5);
+       clrvoxel(3,4,5);
+       delay(500);
+       clrvoxel(2,3,4); 
+       clrvoxel(4,3,4);
+       clrvoxel(3,2,4);
+       clrvoxel(3,4,4);
+       delay(500);
+     }
+      
+     
+     void explosion()
+     {
+ 
+       delay(2000);
+       
+       setvoxel(3,3,5); //centro
+       
+       delay(500);
+       
+       setvoxel(2,3,5); //lados (cruz)
+       setvoxel(4,3,5);
+       setvoxel(3,2,5);
+       setvoxel(3,4,5);
+       
+       delay(400);
+       
+       setvoxel(3,3,4);
+       setvoxel(2,3,4); 
+       setvoxel(4,3,4);
+       setvoxel(3,2,4);
+       setvoxel(3,4,4);
+
+       delay(1000);
+
+     }
+     void explosiones()
+     {
+       setvoxel(3,3,5);
+       delay(70);
+           
+           setvoxel(1,1,5);
+           delay(120);
+           setvoxel(4,4,5);
+         delay(180);
+           
+           
+
+     }
+     
+     
+      
+      /*********************************************** FIN LLUVIA ***************************************************/
+      
+      //Este efecto utiliza estas funciones:
+      
+      // Enciende un solo voxel (LED)
+      
+      void setvoxel(int x, int y, int z)
+      {
+      if (dentro(x,y,z))
+      cubo[z][y] |= (1 << x);
+      }
+      
+      /***********************************************************************************************************
+       * Cambia el contenido del cubo a lo largo de un eje. *
+       * Se usa para efectos donde quieres que se dibuje algo en una cara del cubo y que fluya hacia otra cara, *
+       * como lo lluvia que cae hacia la parte de abajo. *
+       ***********************************************************************************************************/
+      
+      void mueve (char eje, int direccion)
+      {
+          int i, x ,y;
+          int ii, j;
+          int estado;
+      
+          for (i = 0; i < 8; i++)
+          {
+              if (direccion == -1)
+              {
+                  ii = i;
+              } else
+                  {
+                  ii = (7-i);
+                   }
+      
+      
+              for (x = 0; x < 8; x++)
+              {
+                  for (y = 0; y < 8; y++)
+                  {
+                      if (direccion == -1)
+                      {
+                          j = ii+1;
+                      } else
+                        {
+                          j = ii-1;
+                        }
+      
+                    if (eje == eje_Z)
+                        {
+                          estado = getvoxel(x,y,j);
+                          altervoxel(x,y,ii,estado);
+                        }
+      
+                    if (eje == eje_Y)
+                        {
+                          estado = getvoxel(x,j,y);
+                          altervoxel(x,ii,y,estado);
+                        }
+      
+                    if (eje == eje_X)
+                        {
+                          estado = getvoxel(j,y,x);
+                          altervoxel(ii,y,x,estado);
+                        }
+                }
+            }
+      }
+      
+      
+      
+      
+      
+      if (direccion == -1)
+          {
+              i = 7;
+          } else
+              {
+                  i = 0;
+              }
+      
+              for (x = 0; x < 8; x++)
+              {
+                for (y = 0; y < 8; y++)
+                  {
+                    if (eje == eje_Z)
+                    clrvoxel(x,y,i);
+      
+                    if (eje == eje_Y)
+                    clrvoxel(x,i,y);
+      
+                    if (eje == eje_X)
+                    clrvoxel(i,y,x);
+                  }
+              }
+  }
+  
+        void mueve2 (char eje, int direccion)
+      {
+          int i, x ,y;
+          int ii, j;
+          int estado;
+      
+          for (i = 0; i < 6; i++)
+          {
+              if (direccion == -1)
+              {
+                  ii = i;
+              } else
+                  {
+                  ii = (5-i);
+                   }
+      
+      
+              for (x = 0; x < 6; x++)
+              {
+                  for (y = 0; y < 6; y++)
+                  {
+                      if (direccion == -1)
+                      {
+                          j = ii+1;
+                      } else
+                        {
+                          j = ii-1;
+                        }
+      
+                    if (eje == eje_Z)
+                        {
+                          estado = getvoxel(x,y,j);
+                          altervoxel(x,y,ii,estado);
+                        }
+      
+                    if (eje == eje_Y)
+                        {
+                          estado = getvoxel(x,j,y);
+                          altervoxel(x,ii,y,estado);
+                        }
+      
+                    if (eje == eje_X)
+                        {
+                          estado = getvoxel(j,y,x);
+                          altervoxel(ii,y,x,estado);
+                        }
+                }
+            }
+      }
+      
+      
+      
+      
+      
+      if (direccion == -1)
+          {
+              i = 5;
+          } else
+              {
+                  i = 0;
+              }
+      
+              for (x = 0; x < 6; x++)
+              {
+                for (y = 0; y < 6; y++)
+                  {
+                    if (eje == eje_Z)
+                    clrvoxel(x,y,i);
+      
+                    if (eje == eje_Y)
+                    clrvoxel(x,i,y);
+      
+                    if (eje == eje_X)
+                    clrvoxel(i,y,x);
+                  }
+              }
+  }
+  
+
+   
+      
+      // Devuelve el estado actual del voxel (LED).
+      
+      unsigned char getvoxel(int x, int y, int z)
+      {
+      if (dentro(x,y,z))
+      {
+      if (cubo[z][y] & (1 << x))
+      {
+      return 0x01;
+      } else
+      {
+      return 0x00;
+      }
+      } else
+      {
+      return 0x00;
+      }
+      }
+      
+      //Apaga un led
+                                                                                                      
+                                                                                                      void clrvoxel(int x, int y, int z)
+                                                                                                      {
+                                                                                                          if (dentro(x,y,z))
+                                                                                                          cubo[z][y] &= ~(1 << x);
+                                                                                                      }
+      
+      //En algún efecto solo queremos coger un solo bool y guardalo en un voxel (LED).
+      //Esta función llama a la manipulación del voxel (LED) apropiada.
+      
+      void altervoxel(int x, int y, int z, int estado)
+      {
+      if (estado == 1)
+      {
+      setvoxel(x,y,z);
+      } else
+      {
+      clrvoxel(x,y,z);
+      }
+      }
+      
+      //Habría que mirar como hacer un delay diferente, que este no se si funciona correctamente,
+      //a parte, es muy lioso y no esntiendo exactamente lo que hace
+      
+      void delay_ms(uint16_t x)
+      {
+        uint8_t y, z;
+        for ( ; x > 0 ; x--){
+          for ( y = 0 ; y < 90 ; y++){
+            for ( z = 0 ; z < 6 ; z++){
+              asm volatile ("nop");
+            }
+          }
+        }
+      }
+      
+      //Comprueba que se está dibujando dentro del cubo
+      
+      unsigned char dentro(int x, int y, int z)
+      {
+      if ((x >= 0 && x < 8) && (y >= 0 && y < 8) && (z >= 0 && z < 8))
+      {
+      return 0x01; //binario -> 00000001
+      } else
+      {
+      // cuando una de las coordenadas no está dentro del rango del cubo de 8x8x8
+      return 0x00; //binario -> 00000000
+      }
+      }
