@@ -130,7 +130,7 @@
       /*********************************************** FIN LOOP ***************************************************/
       
       
-      /*********************************************** INICIO LLUVIA **********************************************/
+      /*********************************************** INICIO COHETE **********************************************/
       
       
      void cohete()
@@ -270,7 +270,7 @@
      
      
       
-      /*********************************************** FIN LLUVIA ***************************************************/
+      /*********************************************** FIN COHETE ***************************************************/
       
       //Este efecto utiliza estas funciones:
       
@@ -283,9 +283,9 @@
       }
       
       /***********************************************************************************************************
-       * Cambia el contenido del cubo a lo largo de un eje. *
-       * Se usa para efectos donde quieres que se dibuje algo en una cara del cubo y que fluya hacia otra cara, *
-       * como lo lluvia que cae hacia la parte de abajo. *
+       * Cambia el contenido del cubo a lo largo de un eje.                                                      *
+       * Se usa para efectos donde quieres que se dibuje algo en una cara del cubo y que fluya hacia otra cara,  *
+       * como lo lluvia que cae hacia la parte de abajo.                                                         *
        ***********************************************************************************************************/
       
       void mueve (char eje, int direccion)
