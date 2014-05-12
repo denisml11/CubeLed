@@ -105,10 +105,14 @@
       void loop()
       {
         
+        
+        //                         HACER LAS FUNCIONES DE LOS COHETES DE MEJOR FORMA, CON FUNCIONES
+        //                                                Y NO A PELO.
 
           
-         // cohetes();
-          //limpiar3(); //Mirar la funcion de limpiar porqure limpia toooooooda la planta, no hay que indicarle que etela ha de limpiar, el movimineto " void mover(), limpia las plantas"
+          // cohetes();
+          //limpiar3(); // Para limpiar la trayectoria de un cohete o que se hace es:
+                            //Apagar el primer led de laplanta de abajo y moverlohacia arriba, asi se apagan todos
           //explosiones();
           //limpiar3();
           
@@ -129,26 +133,6 @@
       /*********************************************** INICIO LLUVIA **********************************************/
       
       
-      void lluvia (int veces)
-      {
-          int rnd_x;
-          int rnd_y;
-          int rnd_num;
-
-
-              rnd_num = rand()%2; // número de gotas de lluvia que sale por vez creo, con 3 es o una gota o dos.
-
-              for (int i=0; i < rnd_num;i++)
-              {
-                rnd_x = rand()%8; // la posicion de donde sale la gota de agua
-                rnd_y = rand()%8;
-                setvoxel(rnd_x,rnd_y,0); //sale de la planta de abajo
-              }
-
-                delay_ms(10000); //en vez de usar su función de delay_ms, se puede usar la predeterminada de delay();
-                mueve(eje_Z,1);// que sea ascendente el movimiento, se ha de poner que la funcion muev mantegan los leds de trayectoria, y cuando llegue arriba vaya desaparecianedo desde abajo
-           
-    }
      void cohete()
      {
        for(int i = 0; i < 6; i++)
@@ -160,7 +144,13 @@
            mueve2(eje_Z,1);
        }
        
-       //La cosa es que lo hace hasta el ultimo piso, como si el efecto ascendete no parase
+       /*La cosa es que lo hace hasta el último piso, 
+         como si el efecto ascendete no parase, por eso el efecto de
+         mover hay que "caparlo" hasta la planta que queramos, es decir, en nuestro caso hasta la 5, 
+         que sería la sexta ya que se empieza desde 0 y restar, en nuestro caso, 
+         las 2 posiciones en toda la funcion mover, 
+         si se pintase y voxel por encia de esa planta, se ha de borrar directamente con la función 
+         clrvoxel( y dando las coordenadas del led que querems apagar), porque el movimiento no llegaría.*/
      
      }
      
@@ -168,6 +158,9 @@
      {
        for(int i = 0; i < 6; i++)
        {
+         
+           // PONER QUE LAS SALIDAS SEAN ALEATORIAS  
+         
            //primero se ha de encender un led de la capa de abajo
            setvoxel(3,3,0);
            setvoxel(1,1,0);
@@ -241,6 +234,7 @@
      
      void explosion()
      {
+       // ALOMEJOR PINTAR LA EXPLOSION DE ARRIBA Y QUE HACER QUE SE MUEVA EN DIRECCION -1
  
        delay(2000);
        
@@ -268,14 +262,10 @@
      {
        setvoxel(3,3,5);
        delay(70);
-           
-           setvoxel(1,1,5);
-           delay(120);
-           setvoxel(4,4,5);
-         delay(180);
-           
-           
-
+       setvoxel(1,1,5);
+       delay(120);
+       setvoxel(4,4,5);
+       delay(180);           
      }
      
      
@@ -477,12 +467,14 @@
       }
       
       //Apaga un led
-                                                                                                      
-                                                                                                      void clrvoxel(int x, int y, int z)
-                                                                                                      {
-                                                                                                          if (dentro(x,y,z))
-                                                                                                          cubo[z][y] &= ~(1 << x);
-                                                                                                      }
+                                                                           
+      void clrvoxel(int x, int y, int z)
+      {
+          if (dentro(x,y,z))
+          {
+             cubo[z][y] &= ~(1 << x);
+          }
+      }
       
       //En algún efecto solo queremos coger un solo bool y guardalo en un voxel (LED).
       //Esta función llama a la manipulación del voxel (LED) apropiada.
@@ -497,21 +489,7 @@
       clrvoxel(x,y,z);
       }
       }
-      
-      //Habría que mirar como hacer un delay diferente, que este no se si funciona correctamente,
-      //a parte, es muy lioso y no esntiendo exactamente lo que hace
-      
-      void delay_ms(uint16_t x)
-      {
-        uint8_t y, z;
-        for ( ; x > 0 ; x--){
-          for ( y = 0 ; y < 90 ; y++){
-            for ( z = 0 ; z < 6 ; z++){
-              asm volatile ("nop");
-            }
-          }
-        }
-      }
+
       
       //Comprueba que se está dibujando dentro del cubo
       
