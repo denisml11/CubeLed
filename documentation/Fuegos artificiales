@@ -16,7 +16,7 @@
       {
         
         for(int i=0; i<14; i++)
-          pinMode(i, OUTPUT);
+          pinMode(i, OUTPUT);    //Los pines de 0 a 13 lo ponemos de salida
         
         DDRC = 0xff;
         PORTC = 0x00; // 0x00 --> 00000000
@@ -223,11 +223,14 @@
        clrvoxel(4,3,5);
        clrvoxel(3,2,5);
        clrvoxel(3,4,5);
+       
        delay(500);
+       
        clrvoxel(2,3,4); 
        clrvoxel(4,3,4);
        clrvoxel(3,2,4);
        clrvoxel(3,4,4);
+       
        delay(500);
      }
       
@@ -366,7 +369,7 @@
               }
   }
   
-        void mueve2 (char eje, int direccion)
+      void mueve2 (char eje, int direccion)
       {
           int i, x ,y;
           int ii, j;
@@ -415,11 +418,7 @@
                 }
             }
       }
-      
-      
-      
-      
-      
+
       if (direccion == -1)
           {
               i = 5;
@@ -451,19 +450,19 @@
       
       unsigned char getvoxel(int x, int y, int z)
       {
-      if (dentro(x,y,z))
-      {
-      if (cubo[z][y] & (1 << x))
-      {
-      return 0x01;
-      } else
-      {
-      return 0x00;
-      }
-      } else
-      {
-      return 0x00;
-      }
+        if (dentro(x,y,z))
+        {
+          if (cubo[z][y] & (1 << x))
+          {
+            return 0x01;
+          } else
+               {
+                  return 0x00;
+               }
+        } else
+               {
+                return 0x00;
+               }
       }
       
       //Apaga un led
@@ -481,13 +480,13 @@
       
       void altervoxel(int x, int y, int z, int estado)
       {
-      if (estado == 1)
-      {
-      setvoxel(x,y,z);
-      } else
-      {
-      clrvoxel(x,y,z);
-      }
+         if (estado == 1)
+         {
+              setvoxel(x,y,z);
+         } else
+            {
+               clrvoxel(x,y,z);
+            }
       }
 
       
@@ -495,12 +494,12 @@
       
       unsigned char dentro(int x, int y, int z)
       {
-      if ((x >= 0 && x < 8) && (y >= 0 && y < 8) && (z >= 0 && z < 8))
-      {
-      return 0x01; //binario -> 00000001
-      } else
-      {
-      // cuando una de las coordenadas no está dentro del rango del cubo de 8x8x8
-      return 0x00; //binario -> 00000000
-      }
+         if ((x >= 0 && x < 8) && (y >= 0 && y < 8) && (z >= 0 && z < 8))
+         {
+           return 0x01; //binario -> 00000001
+         } else
+           {
+              // cuando una de las coordenadas no está dentro del rango del cubo de 8x8x8
+              return 0x00; //binario -> 00000000
+           }
       }
